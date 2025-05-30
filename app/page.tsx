@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,9 +30,8 @@ import {
   Wrench,
 } from "lucide-react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import { useState } from "react";
 
 // Smooth scroll component
 const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
@@ -88,21 +88,37 @@ const FloatingElement = ({
 // Animated Background Particles
 const BackgroundParticles = () => {
   const particles = Array.from({ length: 50 }, (_, i) => i);
+  const [positions, setPositions] = useState<Array<{ x: number; y: number }>>(
+    []
+  );
+
+  useEffect(() => {
+    setPositions(
+      particles.map(() => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+      }))
+    );
+  }, []);
 
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {particles.map((particle) => (
+      {particles.map((particle, index) => (
         <motion.div
           key={particle}
           className="absolute w-1 h-1 bg-cyan-400 rounded-full"
           initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: positions[index]?.x ?? 0,
+            y: positions[index]?.y ?? 0,
             opacity: 0,
           }}
           animate={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x:
+              Math.random() *
+              (typeof window !== "undefined" ? window.innerWidth : 1000),
+            y:
+              Math.random() *
+              (typeof window !== "undefined" ? window.innerHeight : 1000),
             opacity: [0, 1, 0],
           }}
           transition={{
@@ -157,23 +173,12 @@ const useScrollAnimation = () => {
 };
 
 function CustomRegistrationForm() {
-  const entryIds = {
-    fullName: "entry.40476620",
-    email: "entry.1863079110",
-    phone: "entry.1553410163",
-    university: "entry.1159784740",
-    course: "entry.2008741762",
-    year: "entry.218312836",
-    track: "entry.1351633336",
-    teamName: "entry.78835848",
-    teamSize: "entry.940617101",
-    projectIdea: "entry.1793739925",
-  };
   const [showToast, setShowToast] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   // Google Form endpoint
-  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScVPufgCjzSbLUOEShjqUjdtyxZSSIdstZyV0o6hsfq8u5WLw/formResponse";
+  const FORM_URL =
+    "https://docs.google.com/forms/d/e/1FAIpQLScVPufgCjzSbLUOEShjqUjdtyxZSSIdstZyV0o6hsfq8u5WLw/formResponse";
 
   // Handles form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -184,24 +189,22 @@ function CustomRegistrationForm() {
     for (const [key, value] of formData.entries()) {
       payload[key] = value.toString();
     }
+    console.log("Payload:", payload);
     try {
-      const response = await fetch('/api/submit-google-form', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+      const { data } = await axios.post("/api/submit-google-form", payload, {
+        headers: { "Content-Type": "application/json" },
       });
-      const data = await response.json();
-      console.log('API response:', data);
+      console.log("API response:", data);
       if (data.success) {
         setShowToast(true);
         form.reset();
         setTimeout(() => setShowToast(false), 4000);
       } else {
-        alert('There was an error submitting the form. Please try again.');
+        alert("There was an error submitting the form. Please try again.");
       }
-    } catch (err) {
-      console.error('Error submitting form:', err);
-      alert('There was an error submitting the form. Please try again.');
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("There was an error submitting the form. Please try again.");
     }
   };
 
@@ -211,31 +214,101 @@ function CustomRegistrationForm() {
         className="space-y-7 text-left bg-gray-800/80 p-12 rounded-xl shadow-xl border border-gray-700 max-w-3xl mx-auto"
         onSubmit={handleSubmit}
       >
-        <h3 className="text-2xl font-bold text-cyan-300 mb-6 text-center tracking-tight">Team Registration</h3>
+        <h3 className="text-2xl font-bold text-cyan-300 mb-6 text-center tracking-tight">
+          Team Registration
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="fullName">Full Name *</label>
-            <input id="fullName" name={entryIds.fullName} required placeholder="Enter your full name" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="fullName"
+            >
+              Full Name *
+            </label>
+            <input
+              id="fullName"
+              name="fullName"
+              required
+              placeholder="Enter your full name"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            />
           </div>
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="email">Email Address *</label>
-            <input id="email" name={entryIds.email} type="email" required placeholder="Enter your email address" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="email"
+            >
+              Email Address *
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              placeholder="Enter your email address"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            />
           </div>
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="phone">Phone Number *</label>
-            <input id="phone" name={entryIds.phone} type="tel" required placeholder="Enter your phone number" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="phone"
+            >
+              Phone Number *
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              placeholder="Enter your phone number"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            />
           </div>
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="university">University/College *</label>
-            <input id="university" name={entryIds.university} required placeholder="Enter your university or college" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="university"
+            >
+              University/College *
+            </label>
+            <input
+              id="university"
+              name="university"
+              required
+              placeholder="Enter your university or college"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            />
           </div>
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="course">Course/Degree *</label>
-            <input id="course" name={entryIds.course} required placeholder="Enter your course or degree" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="course"
+            >
+              Course/Degree *
+            </label>
+            <input
+              id="course"
+              name="course"
+              required
+              placeholder="Enter your course or degree"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            />
           </div>
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="year">Year of Study *</label>
-            <select id="year" name={entryIds.year} required title="Year of Study" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all">
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="year"
+            >
+              Year of Study *
+            </label>
+            <select
+              id="year"
+              name="year"
+              required
+              title="Year of Study"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            >
               <option value="">Select Year</option>
               <option>1st Year</option>
               <option>2nd Year</option>
@@ -246,8 +319,19 @@ function CustomRegistrationForm() {
             </select>
           </div>
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="track">Preferred Track *</label>
-            <select id="track" name={entryIds.track} required title="Preferred Track" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all">
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="track"
+            >
+              Preferred Track *
+            </label>
+            <select
+              id="track"
+              name="track"
+              required
+              title="Preferred Track"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            >
               <option value="">Select Track</option>
               <option>Smart Cities & Automation</option>
               <option>Green Tech & Renewable Energy</option>
@@ -258,12 +342,34 @@ function CustomRegistrationForm() {
             </select>
           </div>
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="teamName">Team Name *</label>
-            <input id="teamName" name={entryIds.teamName} required placeholder="Enter your team name" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="teamName"
+            >
+              Team Name *
+            </label>
+            <input
+              id="teamName"
+              name="teamName"
+              required
+              placeholder="Enter your team name"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            />
           </div>
           <div>
-            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="teamSize">Team Size *</label>
-            <select id="teamSize" name={entryIds.teamSize} required title="Team Size" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all">
+            <label
+              className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+              htmlFor="teamSize"
+            >
+              Team Size *
+            </label>
+            <select
+              id="teamSize"
+              name="teamSize"
+              required
+              title="Team Size"
+              className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+            >
               <option value="">Select Team Size</option>
               <option>1 ( Individual )</option>
               <option>2 Members</option>
@@ -273,8 +379,20 @@ function CustomRegistrationForm() {
           </div>
         </div>
         <div>
-          <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="projectIdea">Brief Project Idea *</label>
-          <textarea id="projectIdea" name={entryIds.projectIdea} required rows={3} placeholder="Describe your project idea" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+          <label
+            className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+            htmlFor="projectIdea"
+          >
+            Brief Project Idea *
+          </label>
+          <textarea
+            id="projectIdea"
+            name="projectIdea"
+            required
+            rows={3}
+            placeholder="Describe your project idea"
+            className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+          />
         </div>
         <Button
           type="submit"
