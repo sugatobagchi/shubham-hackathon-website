@@ -33,6 +33,12 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 
+// export const metadata = {
+//   title: "Thinkronix - Electronics Hackathon",
+//   description:
+//     "Join Thinkronix, the premier electronics hackathon at Central University of Rajasthan. Build innovative solutions and win exciting prizes!",
+// };
+
 // Smooth scroll component
 const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
