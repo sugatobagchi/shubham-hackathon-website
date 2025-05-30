@@ -18,9 +18,6 @@ import {
   Zap,
   Target,
   CheckCircle,
-  Mail,
-  Phone,
-  Globe,
   Sparkles,
   CircuitBoard,
   MicroscopeIcon as Microchip,
@@ -100,13 +97,15 @@ const BackgroundParticles = () => {
   );
 
   useEffect(() => {
-    setPositions(
-      particles.map(() => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-      }))
-    );
-  }, []);
+    if (typeof window !== "undefined") {
+      setPositions(
+        particles.map(() => ({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+        }))
+      );
+    }
+  }, [particles]);
 
   return (
     <div className="absolute inset-0 overflow-hidden">
@@ -171,22 +170,9 @@ const Card3D = ({
   );
 };
 
-// Scroll-triggered animation hook
-const useScrollAnimation = () => {
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.5, 0]);
-  return { y, opacity };
-};
-
 function CustomRegistrationForm() {
-  const [showToast, setShowToast] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // Google Form endpoint
-  const FORM_URL =
-    "https://docs.google.com/forms/d/e/1FAIpQLScVPufgCjzSbLUOEShjqUjdtyxZSSIdstZyV0o6hsfq8u5WLw/formResponse";
 
   // Handles form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -472,6 +458,7 @@ export default function ThinkronixLanding() {
   return (
     <SmoothScroll>
       <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
+        <Toaster />
         {/* Animated Background */}
         <BackgroundParticles />
 

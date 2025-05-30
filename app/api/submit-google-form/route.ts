@@ -4,7 +4,6 @@ import axios from "axios";
 const APPS_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbzidQLzJ4BEvmS5s7qX5yAj0h_IUEyLvjXySs9U_o0Zn76iA09Vno8uDYxqpqxoA3O_lQ/exec";
 
-
 // Define the type for form data
 type FormData = {
   fullName: string;
@@ -58,12 +57,14 @@ export async function POST(request: Request) {
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error submitting data:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
     return new Response(
       JSON.stringify({
         error: "Failed to submit data",
-        details: error.message,
+        details: errorMessage,
       }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
