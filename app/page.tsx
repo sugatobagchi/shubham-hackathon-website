@@ -31,6 +31,7 @@ import {
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef, useEffect } from "react";
 import Image from "next/image";
+import { useState } from "react";
 
 // Smooth scroll component
 const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
@@ -154,6 +155,144 @@ const useScrollAnimation = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.5, 0]);
   return { y, opacity };
 };
+
+function CustomRegistrationForm() {
+  const entryIds = {
+    fullName: "entry.40476620",
+    email: "entry.1863079110",
+    phone: "entry.1553410163",
+    university: "entry.1159784740",
+    course: "entry.2008741762",
+    year: "entry.218312836",
+    track: "entry.1351633336",
+    teamName: "entry.78835848",
+    teamSize: "entry.940617101",
+    projectIdea: "entry.1793739925",
+  };
+  const [showToast, setShowToast] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Google Form endpoint
+  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScVPufgCjzSbLUOEShjqUjdtyxZSSIdstZyV0o6hsfq8u5WLw/formResponse";
+
+  // Handles form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const payload: Record<string, string> = {};
+    for (const [key, value] of formData.entries()) {
+      payload[key] = value.toString();
+    }
+    try {
+      const response = await fetch('/api/submit-google-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      console.log('API response:', data);
+      if (data.success) {
+        setShowToast(true);
+        form.reset();
+        setTimeout(() => setShowToast(false), 4000);
+      } else {
+        alert('There was an error submitting the form. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      alert('There was an error submitting the form. Please try again.');
+    }
+  };
+
+  return (
+    <div className="relative">
+      <form
+        className="space-y-7 text-left bg-gray-800/80 p-12 rounded-xl shadow-xl border border-gray-700 max-w-3xl mx-auto"
+        onSubmit={handleSubmit}
+      >
+        <h3 className="text-2xl font-bold text-cyan-300 mb-6 text-center tracking-tight">Team Registration</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="fullName">Full Name *</label>
+            <input id="fullName" name={entryIds.fullName} required placeholder="Enter your full name" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+          </div>
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="email">Email Address *</label>
+            <input id="email" name={entryIds.email} type="email" required placeholder="Enter your email address" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+          </div>
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="phone">Phone Number *</label>
+            <input id="phone" name={entryIds.phone} type="tel" required placeholder="Enter your phone number" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+          </div>
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="university">University/College *</label>
+            <input id="university" name={entryIds.university} required placeholder="Enter your university or college" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+          </div>
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="course">Course/Degree *</label>
+            <input id="course" name={entryIds.course} required placeholder="Enter your course or degree" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+          </div>
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="year">Year of Study *</label>
+            <select id="year" name={entryIds.year} required title="Year of Study" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all">
+              <option value="">Select Year</option>
+              <option>1st Year</option>
+              <option>2nd Year</option>
+              <option>3rd Year</option>
+              <option>4th Year</option>
+              <option>5th Year</option>
+              <option>Post Graduate</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="track">Preferred Track *</label>
+            <select id="track" name={entryIds.track} required title="Preferred Track" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all">
+              <option value="">Select Track</option>
+              <option>Smart Cities & Automation</option>
+              <option>Green Tech & Renewable Energy</option>
+              <option>IoT & Home Automation</option>
+              <option>Healthcare & Assistive Devices</option>
+              <option>Robotics & Drones</option>
+              <option>Agriculture Innovations</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="teamName">Team Name *</label>
+            <input id="teamName" name={entryIds.teamName} required placeholder="Enter your team name" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+          </div>
+          <div>
+            <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="teamSize">Team Size *</label>
+            <select id="teamSize" name={entryIds.teamSize} required title="Team Size" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all">
+              <option value="">Select Team Size</option>
+              <option>1 ( Individual )</option>
+              <option>2 Members</option>
+              <option>3 Members</option>
+              <option>4 Members</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className="block text-cyan-200 font-semibold mb-2 tracking-wide" htmlFor="projectIdea">Brief Project Idea *</label>
+          <textarea id="projectIdea" name={entryIds.projectIdea} required rows={3} placeholder="Describe your project idea" className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" />
+        </div>
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-8 py-4 text-lg shadow-2xl shadow-cyan-500/25 rounded-xl mt-2"
+          disabled={submitting}
+        >
+          {submitting ? "Submitting..." : "Submit Registration"}
+        </Button>
+      </form>
+      {showToast && (
+        <div className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-cyan-700 text-white px-8 py-4 rounded-xl shadow-2xl z-50 transition-all animate-bounce-in text-lg font-semibold">
+          Registration submitted successfully!
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ThinkronixLanding() {
   const { scrollYProgress } = useScroll();
@@ -781,61 +920,7 @@ export default function ThinkronixLanding() {
               How to Register
             </motion.h2>
             <div className="max-w-2xl mx-auto space-y-8">
-              <Card3D>
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="bg-gray-800/80 backdrop-blur-sm border-gray-700 shadow-xl">
-                    <CardContent className="pt-6">
-                      <div className="space-y-4">
-                        {[
-                          {
-                            icon: Globe,
-                            text: "[Insert Registration Link or QR Code]",
-                          },
-                          { icon: Mail, text: "[Insert Contact Email]" },
-                          { icon: Phone, text: "[Insert Phone Number]" },
-                        ].map((contact, index) => (
-                          <motion.div
-                            key={index}
-                            className="flex items-center justify-center space-x-2"
-                            whileHover={{ scale: 1.05, x: 10 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <motion.div
-                              whileHover={{ rotate: 360 }}
-                              transition={{ duration: 0.5 }}
-                            >
-                              <contact.icon className="h-6 w-6 text-cyan-400" />
-                            </motion.div>
-                            <span className="text-gray-300">
-                              {contact.text}
-                            </span>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </Card3D>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-8 py-4 text-lg shadow-2xl shadow-cyan-500/25"
-                >
-                  Register Your Team Now
-                </Button>
-              </motion.div>
+              <CustomRegistrationForm />
             </div>
           </div>
         </motion.section>
