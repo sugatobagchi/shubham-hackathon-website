@@ -2,6 +2,7 @@
 
 import type React from "react";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -181,6 +182,7 @@ const useScrollAnimation = () => {
 function CustomRegistrationForm() {
   const [showToast, setShowToast] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Google Form endpoint
   const FORM_URL =
@@ -189,6 +191,7 @@ function CustomRegistrationForm() {
   // Handles form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitting(true);
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const payload: Record<string, string> = {};
@@ -202,17 +205,60 @@ function CustomRegistrationForm() {
       });
       console.log("API response:", data);
       if (data.success) {
-        setShowToast(true);
+        toast.success("Your response has been recorded!", {
+          duration: 4000,
+          style: {
+            background: "#0C4A6E",
+            color: "#fff",
+            padding: "16px",
+            borderRadius: "8px",
+          },
+        });
+        setIsSubmitted(true);
         form.reset();
-        setTimeout(() => setShowToast(false), 4000);
       } else {
-        alert("There was an error submitting the form. Please try again.");
+        toast.error(
+          "There was an error submitting the form. Please try again.",
+          {
+            duration: 4000,
+            style: {
+              background: "#7F1D1D",
+              color: "#fff",
+              padding: "16px",
+              borderRadius: "8px",
+            },
+          }
+        );
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("There was an error submitting the form. Please try again.");
+      toast.error("There was an error submitting the form. Please try again.", {
+        duration: 4000,
+        style: {
+          background: "#7F1D1D",
+          color: "#fff",
+          padding: "16px",
+          borderRadius: "8px",
+        },
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="text-center py-12">
+        <div className="mb-6">
+          <CheckCircle className="h-16 w-16 text-cyan-400 mx-auto" />
+        </div>
+        <h3 className="text-2xl font-bold text-cyan-300 mb-4">Thank You!</h3>
+        <p className="text-gray-300 text-lg">
+          We have received your response and will get back to you soon.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
@@ -251,6 +297,8 @@ function CustomRegistrationForm() {
               name="email"
               type="email"
               required
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+              title="Please enter a valid email address"
               placeholder="Enter your email address"
               className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
             />
@@ -267,7 +315,9 @@ function CustomRegistrationForm() {
               name="phone"
               type="tel"
               required
-              placeholder="Enter your phone number"
+              pattern="[0-9]{10}"
+              title="Please enter a valid 10-digit phone number"
+              placeholder="Enter your 10-digit phone number"
               className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
             />
           </div>
@@ -409,11 +459,7 @@ function CustomRegistrationForm() {
           {submitting ? "Submitting..." : "Submit Registration"}
         </Button>
       </form>
-      {showToast && (
-        <div className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-cyan-700 text-white px-8 py-4 rounded-xl shadow-2xl z-50 transition-all animate-bounce-in text-lg font-semibold">
-          Registration submitted successfully!
-        </div>
-      )}
+      <Toaster />
     </div>
   );
 }
@@ -1219,7 +1265,7 @@ export default function ThinkronixLanding() {
                 {[
                   "Working hardware prototype is mandatory",
                   "Readymade kits must be significantly modified",
-                  "Teams must submit an abstract before [Deadline]",
+                  "Teams must submit an abstract before the deadline. (Deadline will be announced later)",
                   "Max presentation time: 10 minutes (incl. Q&A)",
                   "No hazardous or unsafe materials allowed",
                 ].map((rule, index) => (

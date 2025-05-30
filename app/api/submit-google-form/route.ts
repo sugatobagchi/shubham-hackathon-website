@@ -4,6 +4,7 @@ import axios from "axios";
 const APPS_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbzidQLzJ4BEvmS5s7qX5yAj0h_IUEyLvjXySs9U_o0Zn76iA09Vno8uDYxqpqxoA3O_lQ/exec";
 
+
 // Define the type for form data
 type FormData = {
   fullName: string;
