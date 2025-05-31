@@ -436,6 +436,28 @@ function CustomRegistrationForm() {
             className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
           />
         </div>
+        <div>
+          <label
+            className="block text-cyan-200 font-semibold mb-2 tracking-wide"
+            htmlFor="projectMedia"
+          >
+            Project Media Links *
+          </label>
+          <input
+            id="projectLink"
+            name="projectLink"
+            type="url"
+            required
+            pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$"
+            title="Please enter a valid URL (e.g., https://drive.google.com/your-folder)"
+            placeholder="Enter links to project images, videos, or documents (Google Drive, GitHub, etc.)"
+            className="w-full px-4 py-2 rounded-lg bg-gray-800/80 text-white border border-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all"
+          />
+          <p className="text-sm text-gray-400 mt-1">
+            Share links to your project media (images, videos, documents) hosted
+            on Google Drive, GitHub, or similar platforms. Make sure the link is public and can be seen by anyone. 
+          </p>
+        </div>
         <Button
           type="submit"
           size="lg"
@@ -525,7 +547,16 @@ export default function ThinkronixLanding() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg shadow-cyan-500/25">
+                {/* if click scroll to register section */}
+                <Button
+                  className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg shadow-cyan-500/25"
+                  onClick={() => {
+                    const registerSection = document.getElementById("register");
+                    if (registerSection) {
+                      registerSection.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
+                >
                   Register Now
                 </Button>
               </motion.div>
@@ -617,6 +648,12 @@ export default function ThinkronixLanding() {
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-8 py-4 text-lg shadow-2xl shadow-cyan-500/25"
+                onClick={() => {
+                  const registerSection = document.getElementById("register");
+                  if (registerSection) {
+                    registerSection.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
               >
                 Register Now
                 <motion.div
@@ -1065,6 +1102,7 @@ export default function ThinkronixLanding() {
           transition={{ duration: 1 }}
           viewport={{ once: true }}
           className="py-16 bg-gray-800/50 backdrop-blur-sm"
+          id="register"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.h2

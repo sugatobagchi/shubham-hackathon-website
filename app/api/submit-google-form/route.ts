@@ -16,6 +16,7 @@ type FormData = {
   teamName: string;
   teamSize: string;
   projectIdea: string;
+  projectLink: string;
   [key: string]: string;
 };
 
