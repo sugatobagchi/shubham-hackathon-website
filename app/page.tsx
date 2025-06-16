@@ -958,35 +958,24 @@ export default function ThinkronixLanding() {
             >
               Prizes
             </motion.h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {[
-                {
-                  gradient: "from-yellow-600 to-yellow-700",
-                  border: "border-yellow-500",
-                  title: "🥇 First Prize",
-                  amount: "Rs. 21,000/-",
-                  delay: 0,
-                },
-                {
-                  gradient: "from-gray-400 to-gray-500",
-                  border: "border-gray-400",
-                  title: "🥈 Second Prize",
-                  amount: "Rs. 11,000/-",
-                  delay: 0.1,
-                },
-                {
-                  gradient: "from-amber-600 to-amber-700",
-                  border: "border-amber-500",
-                  title: "🥉 Third Prize",
-                  amount: "Rs. 5,000/-",
-                  delay: 0.2,
-                },
                 {
                   gradient: "from-cyan-600 to-blue-600",
                   border: "border-cyan-500",
-                  title: "🎖️ Participation",
-                  amount: "Certificates for all participants",
-                  delay: 0.3,
+                  title: "🏆 Total Prize Pool",
+                  amount: "Rs. 1,00,000/-",
+                  description:
+                    "Exciting rewards await the most innovative solutions",
+                  delay: 0,
+                },
+                {
+                  gradient: "from-purple-600 to-pink-600",
+                  border: "border-purple-500",
+                  title: "🎖️ Recognition",
+                  description:
+                    "Certificates and special mentions for all participants",
+                  delay: 0.1,
                 },
               ].map((prize, index) => (
                 <Card3D key={index}>
@@ -997,26 +986,26 @@ export default function ThinkronixLanding() {
                     viewport={{ once: true }}
                   >
                     <Card
-                      className={`bg-gradient-to-br ${prize.gradient} ${prize.border} text-center shadow-2xl`}
+                      className={`bg-gradient-to-br ${prize.gradient} ${prize.border} text-center shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 h-[400px] flex flex-col`}
                     >
-                      <CardHeader>
+                      <CardHeader className="flex-none">
                         <motion.div
                           whileHover={{ scale: 1.2, rotateY: 360 }}
                           transition={{ duration: 0.8 }}
+                          className="mb-4"
                         >
-                          <Trophy className="h-16 w-16 mx-auto text-white mb-4 drop-shadow-lg" />
+                          <Trophy className="h-20 w-20 mx-auto text-white drop-shadow-lg" />
                         </motion.div>
-                        <CardTitle className="text-white text-xl">
+                        <CardTitle className="text-white text-2xl font-bold mb-2">
                           {prize.title}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <p
-                          className={`${
-                            index === 3 ? "text-xl" : "text-3xl"
-                          } font-bold text-white`}
-                        >
+                      <CardContent className="flex-grow flex flex-col justify-center">
+                        <p className="text-3xl font-bold text-white mb-3">
                           {prize.amount}
+                        </p>
+                        <p className="text-white/80 text-lg">
+                          {prize.description}
                         </p>
                       </CardContent>
                     </Card>
