@@ -455,7 +455,8 @@ function CustomRegistrationForm() {
           />
           <p className="text-sm text-gray-400 mt-1">
             Share links to your project media (images, videos, documents) hosted
-            on Google Drive, GitHub, or similar platforms. Make sure the link is public and can be seen by anyone. 
+            on Google Drive, GitHub, or similar platforms. Make sure the link is
+            public and can be seen by anyone.
           </p>
         </div>
         <Button
@@ -539,7 +540,7 @@ export default function ThinkronixLanding() {
                     </span>
                   </div>
                   <span className="text-sm text-gray-400">
-                    — Department of Electronics and Technology
+                    — Department of Electronics and Communication Engineering
                   </span>
                 </div>
               </motion.div>
