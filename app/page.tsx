@@ -755,7 +755,7 @@ export default function ThinkronixLanding() {
                 {
                   icon: DollarSign,
                   title: "Registration Fee",
-                  value: "Only for selected candidates",
+                  value: "Only for shortlisted prototypes",
                   delay: 0.4,
                 },
                 {
@@ -964,7 +964,7 @@ export default function ThinkronixLanding() {
                   gradient: "from-cyan-600 to-blue-600",
                   border: "border-cyan-500",
                   title: "🏆 Attractive Prizes",
-                  amount: "For all participants",
+                  amount: "For all winners",
                   description:
                     "Exciting rewards await the most innovative solutions",
                   delay: 0,
