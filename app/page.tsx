@@ -730,7 +730,7 @@ export default function ThinkronixLanding() {
                 {
                   icon: Calendar,
                   title: "Date",
-                  value: "14/09/2025",
+                  value: "14/09/2025 - 15/09/2025",
                   delay: 0,
                 },
                 {
@@ -755,13 +755,13 @@ export default function ThinkronixLanding() {
                 {
                   icon: DollarSign,
                   title: "Registration Fee",
-                  value: "Rs. 300/-",
+                  value: "Only for selected candidates",
                   delay: 0.4,
                 },
                 {
                   icon: Target,
                   title: "Last Date",
-                  value: "10/08/2025",
+                  value: "15/08/2025",
                   delay: 0.5,
                 },
               ].map((detail, index) => (
@@ -963,8 +963,8 @@ export default function ThinkronixLanding() {
                 {
                   gradient: "from-cyan-600 to-blue-600",
                   border: "border-cyan-500",
-                  title: "🏆 Total Prize Pool",
-                  amount: "Rs. 1,00,000/-",
+                  title: "🏆 Attractive Prizes",
+                  amount: "For all participants",
                   description:
                     "Exciting rewards await the most innovative solutions",
                   delay: 0,
@@ -1151,25 +1151,25 @@ export default function ThinkronixLanding() {
                   {
                     name: "Dr. Milan Sasmal",
                     role: "Faculty Coordinator",
-                    position: "Prof, Department of ECE",
+                    position: "Department of ECE",
                     delay: 0.1,
                   },
                   {
                     name: "Dr. Rajan Singh",
                     role: "Faculty Coordinator",
-                    position: "Prof, Department of ECE",
+                    position: "Department of ECE",
                     delay: 0.2,
                   },
                   {
                     name: "Dr. Kapil Saraswat",
                     role: "Faculty Coordinator",
-                    position: "Prof, Department of ECE",
+                    position: "Department of ECE",
                     delay: 0.3,
                   },
                   {
                     name: "Dr. Sudhir Bhaskar",
                     role: "Faculty Coordinator",
-                    position: "Prof, Department of ECE",
+                    position: "Department of ECE",
                     delay: 0.4,
                   },
                 ].map((faculty, index) => (
