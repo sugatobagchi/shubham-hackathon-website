@@ -1102,7 +1102,7 @@ export default function ThinkronixLanding() {
               viewport={{ once: true }}
               className="text-3xl lg:text-4xl font-bold mb-12 text-cyan-400"
             >
-              How to Register
+              Registration Form
             </motion.h2>
             <div className="max-w-2xl mx-auto space-y-8">
               <CustomRegistrationForm />
